@@ -1,3 +1,4 @@
+from keyword_extraction import get_rake
 from flask import Flask, request, jsonify
 from model import get_pretrained_model_and_tokenizer
 import torch
@@ -8,6 +9,8 @@ def pair_devices(inputs, device):
 
 device = torch.device('cuda')
 model, tokenizer = get_pretrained_model_and_tokenizer(device)
+
+rake = get_rake()
 
 app = Flask(__name__)
 
@@ -22,5 +25,11 @@ def predict():
     "pos_probability": prob_pos.item(), 
   }
   return jsonify(response)
-app.run()
 
+@app.route("/extract", methods=["POST"])
+def extract():
+  data = request.get_json()
+  keywords = rake.run(data['text'], minCharacters = 1, maxWords = 3, minFrequency = 1);
+  return jsonify(keywords);
+
+app.run()
