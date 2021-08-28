@@ -5,6 +5,8 @@ agora
 algmas
 alguns
 ali
+ola
+olá
 ambos
 antes
 apontar
